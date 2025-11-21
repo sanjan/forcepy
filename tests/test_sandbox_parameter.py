@@ -1,6 +1,5 @@
 """Tests for sandbox parameter."""
 
-
 from forcepy import Salesforce
 
 
