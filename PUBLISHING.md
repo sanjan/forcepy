@@ -2,6 +2,40 @@
 
 Complete guide to publishing forcepy to the Python Package Index.
 
+## Quick Links
+
+- **Automated Publishing** (Recommended): See [AUTOMATED_PUBLISHING.md](docs/AUTOMATED_PUBLISHING.md)
+- **Manual Publishing** (This guide): For first release or local publishing
+
+## Publishing Methods
+
+### Option 1: Automated (Recommended) 🚀
+
+**Create a GitHub Release → Automatic PyPI publish!**
+
+1. One-time setup: Configure PyPI Trusted Publishing (see [AUTOMATED_PUBLISHING.md](docs/AUTOMATED_PUBLISHING.md))
+2. Create GitHub Release
+3. Tests run automatically
+4. Publishes to PyPI automatically
+5. ✨ Done!
+
+**Benefits**: Secure (no tokens!), automated tests, full audit trail
+
+### Option 2: Manual (This Guide) 🔧
+
+**Good for**: First release, testing locally, quick iterations
+
+Commands:
+```bash
+just pre-release    # Run all checks
+just publish-test   # Test on TestPyPI
+just publish        # Publish to PyPI
+```
+
+---
+
+# Manual Publishing Guide
+
 ## Prerequisites
 
 ### 1. Create PyPI Accounts
