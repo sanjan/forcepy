@@ -8,10 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned Features
-- Bulk API 2.0 support (Phase 4)
 - Streaming API integration
 - Platform Events support
 - Enhanced async/await patterns
+
+## [0.1.1] - 2024-11-21
+
+### Fixed
+- Updated README to correctly show Bulk API 2.0 as available (not "Coming Soon")
+- Updated comparison table to show Bulk API 2.0 support
+- Corrected example count from 12 to 13 examples
+- Added working Bulk API code examples to README
+
+### Changed
+- Code formatting improvements with ruff (24 files)
+- Enhanced examples section with more detail
 
 ## [0.1.0] - 2024-11-21
 
