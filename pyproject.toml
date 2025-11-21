@@ -93,6 +93,7 @@ disallow_untyped_defs = true
 
 [tool.coverage.run]
 source = ["src"]
+disable_warnings = ["module-not-measured"]
 
 [tool.coverage.report]
 exclude_lines = [
