@@ -9,9 +9,9 @@ default:
 install:
     uv sync
 
-# Install with all extras
+# Install with all extras and dev dependencies
 install-dev:
-    uv sync --all-extras
+    uv sync --all-extras --dev
 
 # Run tests
 test *ARGS:

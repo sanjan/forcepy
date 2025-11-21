@@ -453,7 +453,7 @@ just --list
 **Without just**: You can also use `uv run` directly:
 
 ```bash
-uv sync --all-extras
+uv sync --all-extras --dev
 uv run pytest
 uv run ruff check src/ tests/
 uv run mypy src/forcepy/

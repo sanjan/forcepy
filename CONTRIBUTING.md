@@ -46,7 +46,7 @@ cargo install just  # Any platform with Rust
 
 # 3. Install project dependencies
 just install-dev
-# or manually: uv sync --all-extras
+# or manually: uv sync --all-extras --dev
 
 # 4. See all available commands
 just --list
