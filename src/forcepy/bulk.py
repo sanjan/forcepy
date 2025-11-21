@@ -46,22 +46,22 @@ class BulkJob:
     @property
     def state(self) -> str:
         """Current job state."""
-        return self._job_info.get('state', 'Unknown')
+        return self._job_info.get("state", "Unknown")
 
     @property
     def created_date(self) -> Optional[str]:
         """Job creation timestamp."""
-        return self._job_info.get('createdDate')
+        return self._job_info.get("createdDate")
 
     @property
     def number_records_processed(self) -> int:
         """Number of records processed."""
-        return self._job_info.get('numberRecordsProcessed', 0)
+        return self._job_info.get("numberRecordsProcessed", 0)
 
     @property
     def number_records_failed(self) -> int:
         """Number of records that failed."""
-        return self._job_info.get('numberRecordsFailed', 0)
+        return self._job_info.get("numberRecordsFailed", 0)
 
     def refresh(self) -> None:
         """Refresh job status from Salesforce."""
@@ -73,7 +73,7 @@ class BulkJob:
         self,
         poll_interval: int = 5,
         timeout: Optional[int] = None,
-        callback: Optional[Callable[["BulkJob"], None]] = None
+        callback: Optional[Callable[["BulkJob"], None]] = None,
     ) -> "BulkJob":
         """Wait for job to complete with async polling.
 
@@ -97,17 +97,17 @@ class BulkJob:
             self.refresh()
 
             # Check terminal states
-            if self.state == 'JobComplete':
+            if self.state == "JobComplete":
                 logger.info(f"Job {self.job_id} completed successfully")
                 if callback:
                     callback(self)
                 return self
 
-            elif self.state == 'Failed':
-                error_msg = self._job_info.get('errorMessage', 'Job failed')
+            elif self.state == "Failed":
+                error_msg = self._job_info.get("errorMessage", "Job failed")
                 raise BulkJobError(f"Job {self.job_id} failed: {error_msg}")
 
-            elif self.state == 'Aborted':
+            elif self.state == "Aborted":
                 raise BulkJobError(f"Job {self.job_id} was aborted")
 
             # Check timeout
@@ -143,10 +143,10 @@ class BulkJob:
             failed_records = []
 
         return {
-            'successful': successful_records,
-            'failed': failed_records,
-            'total_processed': self.number_records_processed,
-            'total_failed': self.number_records_failed
+            "successful": successful_records,
+            "failed": failed_records,
+            "total_processed": self.number_records_processed,
+            "total_failed": self.number_records_failed,
         }
 
     def _parse_csv_response(self, csv_text: str) -> list[dict[str, Any]]:
@@ -174,7 +174,7 @@ class BulkJob:
 
         url = f"/services/data/v{self.client.version}/jobs/ingest/{self.job_id}"
         try:
-            self.client.http("PATCH", url, json={'state': 'Aborted'})
+            self.client.http("PATCH", url, json={"state": "Aborted"})
             self.refresh()
             logger.info(f"Job {self.job_id} aborted")
         except Exception as e:
@@ -209,7 +209,7 @@ class BulkObjectOperations:
         Returns:
             BulkJob instance for monitoring
         """
-        return self.bulk_api._create_job(self.object_name, 'insert', records)
+        return self.bulk_api._create_job(self.object_name, "insert", records)
 
     def update(self, records: list[dict[str, Any]]) -> BulkJob:
         """Update records.
@@ -220,7 +220,7 @@ class BulkObjectOperations:
         Returns:
             BulkJob instance for monitoring
         """
-        return self.bulk_api._create_job(self.object_name, 'update', records)
+        return self.bulk_api._create_job(self.object_name, "update", records)
 
     def upsert(self, records: list[dict[str, Any]], external_id_field: str) -> BulkJob:
         """Upsert records using external ID.
@@ -232,12 +232,7 @@ class BulkObjectOperations:
         Returns:
             BulkJob instance for monitoring
         """
-        return self.bulk_api._create_job(
-            self.object_name,
-            'upsert',
-            records,
-            external_id_field=external_id_field
-        )
+        return self.bulk_api._create_job(self.object_name, "upsert", records, external_id_field=external_id_field)
 
     def delete(self, records: list[dict[str, Any]]) -> BulkJob:
         """Delete records.
@@ -248,7 +243,7 @@ class BulkObjectOperations:
         Returns:
             BulkJob instance for monitoring
         """
-        return self.bulk_api._create_job(self.object_name, 'delete', records)
+        return self.bulk_api._create_job(self.object_name, "delete", records)
 
     def query(self, soql: str) -> list[dict[str, Any]]:
         """Execute bulk query.
@@ -302,11 +297,7 @@ class BulkAPI:
         return BulkObjectOperations(self, name)
 
     def _create_job(
-        self,
-        object_name: str,
-        operation: str,
-        records: list[dict[str, Any]],
-        external_id_field: Optional[str] = None
+        self, object_name: str, operation: str, records: list[dict[str, Any]], external_id_field: Optional[str] = None
     ) -> BulkJob:
         """Create and execute a bulk job.
 
@@ -327,17 +318,17 @@ class BulkAPI:
 
         # Create job
         job_data = {
-            'object': object_name,
-            'operation': operation,
-            'contentType': 'JSON'  # Use JSON format (Bulk API 2.0)
+            "object": object_name,
+            "operation": operation,
+            "contentType": "JSON",  # Use JSON format (Bulk API 2.0)
         }
 
         if external_id_field:
-            job_data['externalIdFieldName'] = external_id_field
+            job_data["externalIdFieldName"] = external_id_field
 
         create_url = f"/services/data/v{self.client.version}/jobs/ingest"
         job_info = self.client.http("POST", create_url, json=job_data)
-        job_id = job_info['id']
+        job_id = job_info["id"]
 
         logger.info(f"Created bulk job {job_id} for {operation} on {object_name}")
 
@@ -359,16 +350,13 @@ class BulkAPI:
         from .exceptions import BulkJobError
 
         # Convert records to JSON Lines format (newline-delimited JSON)
-        json_lines = '\n'.join(json.dumps(record) for record in records)
+        json_lines = "\n".join(json.dumps(record) for record in records)
 
         upload_url = f"/services/data/v{self.client.version}/jobs/ingest/{job_id}/batches"
 
         try:
             self.client.http(
-                "PUT",
-                upload_url,
-                data=json_lines.encode('utf-8'),
-                headers={'Content-Type': 'application/json'}
+                "PUT", upload_url, data=json_lines.encode("utf-8"), headers={"Content-Type": "application/json"}
             )
             logger.debug(f"Uploaded {len(records)} records to job {job_id}")
         except Exception as e:
@@ -384,7 +372,7 @@ class BulkAPI:
 
         close_url = f"/services/data/v{self.client.version}/jobs/ingest/{job_id}"
         try:
-            self.client.http("PATCH", close_url, json={'state': 'UploadComplete'})
+            self.client.http("PATCH", close_url, json={"state": "UploadComplete"})
             logger.debug(f"Closed job {job_id}, processing started")
         except Exception as e:
             raise BulkJobError(f"Failed to close job {job_id}: {e}")
@@ -402,19 +390,16 @@ class BulkAPI:
         from .exceptions import BulkJobError
 
         # Create query job
-        job_data = {
-            'operation': 'query',
-            'query': soql
-        }
+        job_data = {"operation": "query", "query": soql}
 
         create_url = f"/services/data/v{self.client.version}/jobs/query"
         job_info = self.client.http("POST", create_url, json=job_data)
-        job_id = job_info['id']
+        job_id = job_info["id"]
 
         logger.info(f"Created bulk query job {job_id}")
 
         # Wait for completion
-        job = BulkJob(self.client, job_id, object_name, 'query', job_info)
+        job = BulkJob(self.client, job_id, object_name, "query", job_info)
         job.wait_for_completion()
 
         # Get results
@@ -435,7 +420,7 @@ def records_to_json(records: list[dict[str, Any]]) -> str:
     Returns:
         JSON Lines formatted string (newline-delimited JSON)
     """
-    return '\n'.join(json.dumps(record) for record in records)
+    return "\n".join(json.dumps(record) for record in records)
 
 
 def records_to_csv(records: list[dict[str, Any]]) -> str:
@@ -471,10 +456,10 @@ def validate_records(records: list[dict[str, Any]], operation: str) -> None:
     if not records:
         raise ValueError("Records list cannot be empty")
 
-    if operation in ('update', 'delete'):
+    if operation in ("update", "delete"):
         # Must have Id field
         for i, record in enumerate(records):
-            if 'Id' not in record:
+            if "Id" not in record:
                 raise ValueError(f"Record {i} missing required 'Id' field for {operation} operation")
 
     # All records should have same structure (same fields)
@@ -483,4 +468,3 @@ def validate_records(records: list[dict[str, Any]], operation: str) -> None:
         for i, record in enumerate(records[1:], start=1):
             if set(record.keys()) != first_keys:
                 logger.warning(f"Record {i} has different fields than first record")
-

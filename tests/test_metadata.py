@@ -11,26 +11,30 @@ class TestFieldDescribe:
     @pytest.fixture
     def required_field(self):
         """Create a required field."""
-        return FieldDescribe({
-            "name": "Name",
-            "type": "string",
-            "length": 255,
-            "nillable": False,
-            "defaultedOnCreate": False,
-            "createable": True,
-            "updateable": True,
-        })
+        return FieldDescribe(
+            {
+                "name": "Name",
+                "type": "string",
+                "length": 255,
+                "nillable": False,
+                "defaultedOnCreate": False,
+                "createable": True,
+                "updateable": True,
+            }
+        )
 
     @pytest.fixture
     def optional_field(self):
         """Create an optional field."""
-        return FieldDescribe({
-            "name": "Phone",
-            "type": "phone",
-            "nillable": True,
-            "createable": True,
-            "updateable": True,
-        })
+        return FieldDescribe(
+            {
+                "name": "Phone",
+                "type": "phone",
+                "nillable": True,
+                "createable": True,
+                "updateable": True,
+            }
+        )
 
     def test_is_required_true(self, required_field):
         """Test is_required for required field."""
@@ -55,30 +59,38 @@ class TestFieldDescribeSet:
     @pytest.fixture
     def field_set(self):
         """Create a field set."""
-        return FieldDescribeSet([
-            FieldDescribe({
-                "name": "Id",
-                "type": "id",
-                "nillable": False,
-                "createable": False,
-                "updateable": False,
-            }),
-            FieldDescribe({
-                "name": "Name",
-                "type": "string",
-                "nillable": False,
-                "defaultedOnCreate": False,
-                "createable": True,
-                "updateable": True,
-            }),
-            FieldDescribe({
-                "name": "Phone",
-                "type": "phone",
-                "nillable": True,
-                "createable": True,
-                "updateable": True,
-            }),
-        ])
+        return FieldDescribeSet(
+            [
+                FieldDescribe(
+                    {
+                        "name": "Id",
+                        "type": "id",
+                        "nillable": False,
+                        "createable": False,
+                        "updateable": False,
+                    }
+                ),
+                FieldDescribe(
+                    {
+                        "name": "Name",
+                        "type": "string",
+                        "nillable": False,
+                        "defaultedOnCreate": False,
+                        "createable": True,
+                        "updateable": True,
+                    }
+                ),
+                FieldDescribe(
+                    {
+                        "name": "Phone",
+                        "type": "phone",
+                        "nillable": True,
+                        "createable": True,
+                        "updateable": True,
+                    }
+                ),
+            ]
+        )
 
     def test_get_by_name(self, field_set):
         """Test getting field by name."""
@@ -126,43 +138,45 @@ class TestObjectDescribe:
     @pytest.fixture
     def account_describe(self):
         """Create an Account describe."""
-        return ObjectDescribe({
-            "name": "Account",
-            "label": "Account",
-            "queryable": True,
-            "createable": True,
-            "updateable": True,
-            "deletable": True,
-            "fields": [
-                {
-                    "name": "Id",
-                    "type": "id",
-                    "nillable": False,
-                    "createable": False,
-                    "updateable": False,
-                },
-                {
-                    "name": "Name",
-                    "type": "string",
-                    "nillable": False,
-                    "defaultedOnCreate": False,
-                    "createable": True,
-                    "updateable": True,
-                },
-                {
-                    "name": "Industry",
-                    "type": "picklist",
-                    "nillable": True,
-                    "createable": True,
-                    "updateable": True,
-                    "picklistValues": [
-                        {"value": "Technology", "label": "Technology", "active": True},
-                        {"value": "Finance", "label": "Finance", "active": True},
-                        {"value": "Healthcare", "label": "Healthcare", "active": False},
-                    ],
-                },
-            ],
-        })
+        return ObjectDescribe(
+            {
+                "name": "Account",
+                "label": "Account",
+                "queryable": True,
+                "createable": True,
+                "updateable": True,
+                "deletable": True,
+                "fields": [
+                    {
+                        "name": "Id",
+                        "type": "id",
+                        "nillable": False,
+                        "createable": False,
+                        "updateable": False,
+                    },
+                    {
+                        "name": "Name",
+                        "type": "string",
+                        "nillable": False,
+                        "defaultedOnCreate": False,
+                        "createable": True,
+                        "updateable": True,
+                    },
+                    {
+                        "name": "Industry",
+                        "type": "picklist",
+                        "nillable": True,
+                        "createable": True,
+                        "updateable": True,
+                        "picklistValues": [
+                            {"value": "Technology", "label": "Technology", "active": True},
+                            {"value": "Finance", "label": "Finance", "active": True},
+                            {"value": "Healthcare", "label": "Healthcare", "active": False},
+                        ],
+                    },
+                ],
+            }
+        )
 
     def test_fields_converted_to_set(self, account_describe):
         """Test that fields are converted to FieldDescribeSet."""
@@ -283,4 +297,3 @@ class TestDescribeCache:
         assert "Account" not in cache  # Oldest evicted
         assert "Contact" in cache
         assert "Case" in cache
-

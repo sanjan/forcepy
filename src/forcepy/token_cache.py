@@ -175,8 +175,7 @@ class RedisCache(TokenCache):
             import redis
         except ImportError as e:
             raise ImportError(
-                "Redis cache requires the redis package. "
-                "Install with: pip install redis or pip install forcepy[redis]"
+                "Redis cache requires the redis package. Install with: pip install redis or pip install forcepy[redis]"
             ) from e
 
         self._client = redis.from_url(redis_url, decode_responses=True, **redis_kwargs)
@@ -265,8 +264,7 @@ def create_cache(backend: Optional[str | TokenCache] = None, **kwargs: Any) -> T
         return RedisCache(**kwargs)
     else:
         raise ValueError(
-            f"Unknown cache backend: {backend}. "
-            f"Valid options: 'memory', 'null', 'redis', or a TokenCache instance"
+            f"Unknown cache backend: {backend}. Valid options: 'memory', 'null', 'redis', or a TokenCache instance"
         )
 
 
@@ -283,4 +281,3 @@ def get_cache_key(username: str, base_url: str) -> str:
     # Normalize base URL (remove protocol and trailing slash)
     base_url = base_url.replace("https://", "").replace("http://", "").rstrip("/")
     return f"{username}@{base_url}"
-

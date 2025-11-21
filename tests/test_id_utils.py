@@ -1,6 +1,5 @@
 """Tests for Salesforce ID utilities."""
 
-
 from forcepy.id_utils import compare_ids, id_in_list, is_valid_id, normalize_id
 
 
@@ -133,4 +132,3 @@ class TestIsValidId:
     def test_none(self):
         """Test None value."""
         assert not is_valid_id(None)
-

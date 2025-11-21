@@ -158,11 +158,7 @@ class ObjectDescribe(Result):
         return values
 
     def get_dependent_picklist_values(
-        self,
-        field_name: str,
-        controlling_field: str = None,
-        controlling_value: str = None,
-        active_only: bool = True
+        self, field_name: str, controlling_field: str = None, controlling_value: str = None, active_only: bool = True
     ) -> list[dict[str, Any]]:
         """Get dependent picklist values filtered by controlling field value.
 
@@ -347,4 +343,3 @@ class DescribeCache:
 
     def __contains__(self, sobject_name: str):
         return sobject_name in self._cache
-

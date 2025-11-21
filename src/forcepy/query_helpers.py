@@ -165,4 +165,3 @@ def prettyprint_soql(query: str) -> str:
     from .query_advanced import format_soql
 
     return format_soql(query)
-

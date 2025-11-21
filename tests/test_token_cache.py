@@ -28,7 +28,11 @@ class TestMemoryCache:
     def test_get_set(self):
         """Test basic get/set operations."""
         cache = MemoryCache()
-        token_data = {"session_id": "abc123", "instance_url": "https://na1.salesforce.com", "expires_at": time.time() + 3600}
+        token_data = {
+            "session_id": "abc123",
+            "instance_url": "https://na1.salesforce.com",
+            "expires_at": time.time() + 3600,
+        }
 
         # Initially empty
         assert cache.get("user1") is None
@@ -41,7 +45,11 @@ class TestMemoryCache:
     def test_expiration(self):
         """Test automatic TTL expiration."""
         cache = MemoryCache(default_ttl=1)  # 1 second TTL
-        token_data = {"session_id": "abc123", "instance_url": "https://na1.salesforce.com", "expires_at": time.time() + 3600}
+        token_data = {
+            "session_id": "abc123",
+            "instance_url": "https://na1.salesforce.com",
+            "expires_at": time.time() + 3600,
+        }
 
         cache.set("user1", token_data, ttl=1)
         assert cache.get("user1") == token_data
@@ -119,9 +127,7 @@ class TestRedisCache:
             # Expected if redis not installed
             assert "redis package" in str(e).lower()
 
-    @pytest.mark.skipif(
-        True, reason="Requires Redis server - run manually with Redis available"
-    )
+    @pytest.mark.skipif(True, reason="Requires Redis server - run manually with Redis available")
     def test_redis_get_set(self):
         """Test Redis get/set (requires Redis server)."""
         cache = RedisCache(redis_url="redis://localhost:6379", prefix="test:")
@@ -196,4 +202,3 @@ class TestTokenCacheInterface:
         assert hasattr(cache, "set")
         assert hasattr(cache, "delete")
         assert hasattr(cache, "clear")
-

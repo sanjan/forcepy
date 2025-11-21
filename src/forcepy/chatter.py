@@ -269,9 +269,7 @@ class Chatter:
         """
         return self.post(text, subject_id=record_id, format_message=format_message)
 
-    def comment(
-        self, feed_element_id: str, text: str, format_message: bool = True
-    ) -> dict[str, Any]:
+    def comment(self, feed_element_id: str, text: str, format_message: bool = True) -> dict[str, Any]:
         """Comment on a feed element.
 
         Args:
@@ -440,4 +438,3 @@ class Chatter:
         """
         url = f"{self.base_url}/groups/{group_id}"
         return self.client.http("GET", url)
-

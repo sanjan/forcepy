@@ -63,7 +63,9 @@ class TestExpandSelectStar:
             ]
             # Make each field's get() method work properly
             for i, field in enumerate(mock.fields[:-1]):  # Exclude attributes
-                field.get.side_effect = lambda key, default=None, idx=i: ["Id", "Name", "Industry"][idx] if key == "name" else None
+                field.get.side_effect = (
+                    lambda key, default=None, idx=i: ["Id", "Name", "Industry"][idx] if key == "name" else None
+                )
 
             # Special handling for attributes field
             mock.fields[-1].get.side_effect = lambda key, default=None: "attributes" if key == "name" else None
@@ -216,4 +218,3 @@ class TestFormatSoql:
         assert "WHERE" in formatted
         assert "ORDER BY Name" in formatted
         assert "LIMIT 10" in formatted
-

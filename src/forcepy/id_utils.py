@@ -115,4 +115,3 @@ def is_valid_id(salesforce_id: str) -> bool:
         return False
 
     return True
-

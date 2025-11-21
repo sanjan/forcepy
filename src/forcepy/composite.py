@@ -318,4 +318,3 @@ def validate_composite_response(response: CompositeResponse, raise_on_error: boo
         raise CompositeError(error_message, response=response)
 
     return False
-

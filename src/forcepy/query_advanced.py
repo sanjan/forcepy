@@ -227,4 +227,3 @@ def format_soql(soql: str, indent: str = "  ") -> str:
             result_lines.append(line)
 
     return "\n".join(result_lines)
-

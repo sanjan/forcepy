@@ -1,6 +1,5 @@
 """Tests for sandbox parameter."""
 
-import pytest
 
 from forcepy import Salesforce
 
@@ -38,11 +37,11 @@ class TestSandboxParameter:
         # Production
         sf_prod = Salesforce()
         assert sf_prod.get_login_url() == "https://login.salesforce.com"
-        
+
         # Sandbox
         sf_sandbox = Salesforce(sandbox=True)
         assert sf_sandbox.get_login_url() == "https://test.salesforce.com"
-        
+
         # Custom
         sf_custom = Salesforce(base_url="https://custom.my.salesforce.com")
         assert sf_custom.get_login_url() == "https://custom.my.salesforce.com"
@@ -52,13 +51,12 @@ class TestSandboxParameter:
         # We don't want to actually authenticate in unit tests
         # Just verify the parameters are stored correctly
         sf = Salesforce(
-            username='user@example.com',
-            password='pass',
+            username="user@example.com",
+            password="pass",
             sandbox=True,
-            session_id='dummy'  # Provide session_id to skip auto-login
+            session_id="dummy",  # Provide session_id to skip auto-login
         )
-        assert sf.username == 'user@example.com'
-        assert sf.password == 'pass'
+        assert sf.username == "user@example.com"
+        assert sf.password == "pass"
         assert sf.sandbox is True
         assert sf.base_url == "https://test.salesforce.com"
-

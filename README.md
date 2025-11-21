@@ -152,11 +152,23 @@ from forcepy.results import ResultSet
 imported = ResultSet.from_csv('accounts.csv')
 ```
 
-#### 🗄️ Bulk API (Coming Soon)
+#### 🗄️ Bulk API 2.0
 
 ```python
-# Handle millions of records efficiently (Phase 4 feature)
-results = sf.bulk.Account.insert(large_dataset)
+# Handle millions of records efficiently
+records = [{'Name': f'Account {i}', 'Industry': 'Technology'} for i in range(10000)]
+job = sf.bulk.Account.insert(records)
+
+# Wait for completion and get results
+results = job.wait()
+print(f"Processed: {results['numberRecordsProcessed']}")
+print(f"Failed: {results['numberRecordsFailed']}")
+
+# Or query large datasets
+job = sf.bulk.Account.query("SELECT Id, Name FROM Account")
+for batch in job.get_results():
+    for record in batch:
+        print(record['Name'])
 ```
 
 ## Key Features
@@ -228,7 +240,7 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
 - 📖 **[Token Caching Guide](docs/TOKEN_CACHING.md)** - Production caching strategies
 - 🔐 **[Authentication Guide](docs/AUTHENTICATION.md)** - All auth methods explained
 - 💬 **[Chatter Features](docs/CHATTER_FEATURES.md)** - Complete Chatter reference
-- 💡 **[Examples](examples/)** - 12 ready-to-run code examples
+- 💡 **[Examples](examples/)** - 13 ready-to-run code examples (including bulk operations!)
 
 ## Resources
 
@@ -238,7 +250,15 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
   - [Chatter Features](docs/CHATTER_FEATURES.md) - Complete Chatter reference
   - [Bulk API Guide](docs/BULK_API.md) - Handle large-scale operations
   - [Library Comparison](docs/PUBLIC_LIBRARY_COMPARISON.md) - vs simple-salesforce
-- **Examples:** [12 ready-to-run code examples](examples/)
+- **Examples:** [13 ready-to-run code examples](examples/)
+  - Basic queries and CRUD operations
+  - Advanced filtering with Q objects
+  - **Bulk API 2.0** for large-scale operations
+  - JWT and OAuth authentication
+  - Chatter integration
+  - Composite API batch operations
+  - Token caching strategies
+  - And more!
 - **Issues:** [Report bugs or request features](https://github.com/sanjan/forcepy/issues)
 - **Discussions:** [Get help from the community](https://github.com/sanjan/forcepy/discussions)
 
@@ -267,7 +287,7 @@ Forcepy builds on the foundation of simple-salesforce with many powerful additio
 | Type hints | ✅ | Limited |
 | Dot notation | ✅ | ✅ |
 | SOQL queries | ✅ | ✅ |
-| Bulk API | 🔜 Coming soon | ✅ |
+| Bulk API 2.0 | ✅ | ✅ |
 
 ## Examples
 

@@ -62,11 +62,7 @@ class DynamicEndpoint:
         if self.client._batch_mode:
             # Add to batch queue
             ref_id = f"request_{len(self.client._batch_requests)}"
-            self.client._batch_requests.append({
-                "method": "GET",
-                "url": self._build_url(),
-                "referenceId": ref_id
-            })
+            self.client._batch_requests.append({"method": "GET", "url": self._build_url(), "referenceId": ref_id})
             return {"referenceId": ref_id}  # Return placeholder
         return self.client.http("GET", self._build_url(), params=params)
 
@@ -75,12 +71,9 @@ class DynamicEndpoint:
         if self.client._batch_mode:
             # Add to batch queue
             ref_id = f"request_{len(self.client._batch_requests)}"
-            self.client._batch_requests.append({
-                "method": "POST",
-                "url": self._build_url(),
-                "referenceId": ref_id,
-                "body": data
-            })
+            self.client._batch_requests.append(
+                {"method": "POST", "url": self._build_url(), "referenceId": ref_id, "body": data}
+            )
             return {"referenceId": ref_id}  # Return placeholder
         return self.client.http("POST", self._build_url(), json=data)
 
@@ -89,12 +82,9 @@ class DynamicEndpoint:
         if self.client._batch_mode:
             # Add to batch queue
             ref_id = f"request_{len(self.client._batch_requests)}"
-            self.client._batch_requests.append({
-                "method": "PATCH",
-                "url": self._build_url(),
-                "referenceId": ref_id,
-                "body": data
-            })
+            self.client._batch_requests.append(
+                {"method": "PATCH", "url": self._build_url(), "referenceId": ref_id, "body": data}
+            )
             return {"referenceId": ref_id}  # Return placeholder
         return self.client.http("PATCH", self._build_url(), json=data)
 
@@ -103,11 +93,7 @@ class DynamicEndpoint:
         if self.client._batch_mode:
             # Add to batch queue
             ref_id = f"request_{len(self.client._batch_requests)}"
-            self.client._batch_requests.append({
-                "method": "DELETE",
-                "url": self._build_url(),
-                "referenceId": ref_id
-            })
+            self.client._batch_requests.append({"method": "DELETE", "url": self._build_url(), "referenceId": ref_id})
             return {"referenceId": ref_id}  # Return placeholder
         return self.client.http("DELETE", self._build_url())
 
@@ -178,14 +164,14 @@ class Salesforce:
         Example:
             >>> # Production org (default)
             >>> sf = Salesforce(username='user@example.com', password='password')
-            
+
             >>> # With security token (automatically appended to password)
             >>> sf = Salesforce(
             ...     username='user@example.com',
             ...     password='password',
             ...     security_token='yourSecurityToken123'
             ... )
-            
+
             >>> # Sandbox org
             >>> sf = Salesforce(username='user@example.com', password='password', sandbox=True)
 
@@ -262,7 +248,7 @@ class Salesforce:
         username = kwargs.get("username", self.username)
         password = kwargs.get("password", self.password)
         security_token = kwargs.get("security_token", self.security_token)
-        
+
         # Append security token to password if provided
         if password and security_token and not password.endswith(security_token):
             password = password + security_token
@@ -447,13 +433,17 @@ class Salesforce:
                     if attempt < self.max_retries:
                         wait_time = self.retry_delay
                         if self.retry_backoff:
-                            wait_time *= (2 ** attempt)
-                        logger.warning(f"Rate limited (429). Retrying in {wait_time}s... (attempt {attempt + 1}/{self.max_retries})")
+                            wait_time *= 2**attempt
+                        logger.warning(
+                            f"Rate limited (429). Retrying in {wait_time}s... (attempt {attempt + 1}/{self.max_retries})"
+                        )
                         time.sleep(wait_time)
                         continue
                     else:
                         error_msg = parse_error_response(response)
-                        raise APIError(f"Rate limited (429) after {self.max_retries} retries: {error_msg}", status_code=429)
+                        raise APIError(
+                            f"Rate limited (429) after {self.max_retries} retries: {error_msg}", status_code=429
+                        )
 
                 # Handle unauthorized (401)
                 if response.status_code == 401:
@@ -475,7 +465,7 @@ class Salesforce:
                 if self._is_retryable_error(response) and attempt < self.max_retries:
                     wait_time = self.retry_delay
                     if self.retry_backoff:
-                        wait_time *= (2 ** attempt)
+                        wait_time *= 2**attempt
 
                     error_msg = parse_error_response(response)
                     logger.warning(
@@ -490,7 +480,7 @@ class Salesforce:
                 raise APIError(
                     f"HTTP {response.status_code}: {error_msg}",
                     status_code=response.status_code,
-                    response=response.json() if response.content else {}
+                    response=response.json() if response.content else {},
                 )
 
             except requests.RequestException as e:
@@ -498,7 +488,7 @@ class Salesforce:
                 if attempt < self.max_retries:
                     wait_time = self.retry_delay
                     if self.retry_backoff:
-                        wait_time *= (2 ** attempt)
+                        wait_time *= 2**attempt
                     logger.warning(
                         f"Request failed: {e}. Retrying in {wait_time}s... (attempt {attempt + 1}/{self.max_retries})"
                     )
@@ -534,6 +524,7 @@ class Salesforce:
         # Expand SELECT * if requested
         if expand_select_star and "SELECT *" in soql.upper():
             from .query_advanced import expand_select_star as expand_fn
+
             soql = expand_fn(soql, self.describe)
 
         url = f"/services/data/v{self.version}/query/"
@@ -809,11 +800,7 @@ class Salesforce:
         return self.http("GET", url)
 
     def get_picklist_values(
-        self,
-        sobject_name: str,
-        field_name: str,
-        controlling_value: str = None,
-        active_only: bool = True
+        self, sobject_name: str, field_name: str, controlling_value: str = None, active_only: bool = True
     ) -> list[dict[str, Any]]:
         """Get picklist values, optionally filtered by controlling field value.
 
@@ -844,9 +831,7 @@ class Salesforce:
 
         if controlling_value:
             return describe.get_dependent_picklist_values(
-                field_name,
-                controlling_value=controlling_value,
-                active_only=active_only
+                field_name, controlling_value=controlling_value, active_only=active_only
             )
         else:
             return describe.get_picklist_values(field_name, active_only=active_only)
@@ -1190,8 +1175,9 @@ class Salesforce:
         # Special handling for bulk property (lazy initialization)
         if name == "bulk":
             # Avoid infinite recursion by checking __dict__ directly
-            if '_bulk_api' not in self.__dict__:
+            if "_bulk_api" not in self.__dict__:
                 from .bulk import BulkAPI
+
                 self._bulk_api = BulkAPI(self)
             return self._bulk_api
         return DynamicEndpoint(self, [name])
@@ -1228,10 +1214,7 @@ class Salesforce:
                 composite_response = self.http(
                     "POST",
                     f"/services/data/v{self.version}/composite",
-                    json={
-                        "allOrNone": False,
-                        "compositeRequest": self._batch_requests
-                    }
+                    json={"allOrNone": False, "compositeRequest": self._batch_requests},
                 )
                 return composite_response
         finally:

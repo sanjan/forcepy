@@ -141,56 +141,67 @@ def get_filter_lookups(**kwargs: Any) -> list[tuple[str, Callable]]:
         if field.endswith(("__in", "__IN")):
             field = re.sub(r"__in$", "", field, flags=re.IGNORECASE)
             target_set = set(target) if isinstance(target, (list, tuple, set)) else target
+
             def lookup(v, r, t=target_set):
                 return v in evaluate(t, r)
 
         elif field.endswith(("__contains", "__CONTAINS")):
             field = re.sub(r"__contains$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and evaluate(t, r) in v
 
         elif field.endswith(("__startswith", "__STARTSWITH")):
             field = re.sub(r"__startswith$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and v.startswith(evaluate(t, r))
 
         elif field.endswith(("__endswith", "__ENDSWITH")):
             field = re.sub(r"__endswith$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and v.endswith(evaluate(t, r))
 
         elif field.endswith(("__gt", "__GT")):
             field = re.sub(r"__gt$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v > evaluate(t, r)
 
         elif field.endswith(("__gte", "__GTE")):
             field = re.sub(r"__gte$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v >= evaluate(t, r)
 
         elif field.endswith(("__lt", "__LT")):
             field = re.sub(r"__lt$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v < evaluate(t, r)
 
         elif field.endswith(("__lte", "__LTE")):
             field = re.sub(r"__lte$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v <= evaluate(t, r)
 
         elif field.endswith(("__ne", "__NE")):
             field = re.sub(r"__ne$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v != evaluate(t, r)
 
         elif field.endswith(("__isnull", "__ISNULL")):
             field = re.sub(r"__isnull$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return (v is None) if evaluate(t, r) else (v is not None)
 
         elif field.endswith(("__icontains", "__ICONTAINS")):
             field = re.sub(r"__icontains$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 if v is None:
                     return False
@@ -201,16 +212,19 @@ def get_filter_lookups(**kwargs: Any) -> list[tuple[str, Callable]]:
 
         elif field.endswith(("__istartswith", "__ISTARTSWITH")):
             field = re.sub(r"__istartswith$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and str(v).lower().startswith(str(evaluate(t, r)).lower())
 
         elif field.endswith(("__iendswith", "__IENDSWITH")):
             field = re.sub(r"__iendswith$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and str(v).lower().endswith(str(evaluate(t, r)).lower())
 
         elif field.endswith(("__iexact", "__IEXACT")):
             field = re.sub(r"__iexact$", "", field, flags=re.IGNORECASE)
+
             def lookup(v, r, t=target):
                 return v is not None and str(v).lower() == str(evaluate(t, r)).lower()
 
@@ -427,13 +441,13 @@ class ResultSet(collections.UserList):
 
     def to_csv(self, filepath: Optional[str] = None) -> Union[str, None]:
         """Export results to CSV format.
-        
+
         Args:
             filepath: Optional file path to write. If None, returns CSV string.
-            
+
         Returns:
             CSV string if filepath is None, otherwise None
-            
+
         Example:
             >>> accounts = sf.query("SELECT Id, Name, Industry FROM Account LIMIT 10")
             >>> # Get CSV string
@@ -443,10 +457,10 @@ class ResultSet(collections.UserList):
         """
         import csv
         import io
-        
+
         if not self:
             return "" if filepath is None else None
-        
+
         # Get all unique keys across all records
         fieldnames = []
         seen = set()
@@ -455,20 +469,20 @@ class ResultSet(collections.UserList):
                 if key not in seen:
                     fieldnames.append(key)
                     seen.add(key)
-        
+
         output = io.StringIO()
-        writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction='ignore')
+        writer = csv.DictWriter(output, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
-        
+
         for result in self:
             # Convert None to empty string for CSV
-            row = {k: ('' if v is None else v) for k, v in result.items()}
+            row = {k: ("" if v is None else v) for k, v in result.items()}
             writer.writerow(row)
-        
+
         csv_content = output.getvalue()
-        
+
         if filepath:
-            with open(filepath, 'w', newline='') as f:
+            with open(filepath, "w", newline="") as f:
                 f.write(csv_content)
             return None
         return csv_content
@@ -476,13 +490,13 @@ class ResultSet(collections.UserList):
     @classmethod
     def from_csv(cls, filepath_or_data: Union[str, "io.IOBase"]) -> "ResultSet":
         """Import results from CSV format.
-        
+
         Args:
             filepath_or_data: File path string or file-like object
-            
+
         Returns:
             ResultSet containing imported records
-            
+
         Example:
             >>> # From file
             >>> accounts = ResultSet.from_csv('accounts.csv')
@@ -493,27 +507,27 @@ class ResultSet(collections.UserList):
         """
         import csv
         import io
-        
+
         if isinstance(filepath_or_data, str):
-            if '\n' in filepath_or_data or ',' in filepath_or_data:
+            if "\n" in filepath_or_data or "," in filepath_or_data:
                 # It's CSV data, not a filepath
                 file_obj = io.StringIO(filepath_or_data)
             else:
                 # It's a filepath
-                file_obj = open(filepath_or_data, 'r', newline='')
+                file_obj = open(filepath_or_data, newline="")
         else:
             file_obj = filepath_or_data
-        
+
         try:
             reader = csv.DictReader(file_obj)
             results = cls()
             for row in reader:
                 # Convert empty strings back to None
-                cleaned_row = {k: (None if v == '' else v) for k, v in row.items()}
+                cleaned_row = {k: (None if v == "" else v) for k, v in row.items()}
                 results.append(Result(cleaned_row))
             return results
         finally:
-            if isinstance(filepath_or_data, str) and '\n' not in filepath_or_data and ',' not in filepath_or_data:
+            if isinstance(filepath_or_data, str) and "\n" not in filepath_or_data and "," not in filepath_or_data:
                 file_obj.close()
 
     def __repr__(self) -> str:

@@ -30,7 +30,11 @@ class TestCompositeSubResponse:
 
     def test_error_response(self):
         """Test error subrequest response."""
-        response_data = {"referenceId": "FailedRequest", "httpStatusCode": 400, "body": [{"message": "Required field missing"}]}
+        response_data = {
+            "referenceId": "FailedRequest",
+            "httpStatusCode": 400,
+            "body": [{"message": "Required field missing"}],
+        }
         sub_response = CompositeSubResponse(response_data)
 
         assert sub_response.reference_id == "FailedRequest"
@@ -47,8 +51,16 @@ class TestCompositeResponse:
         return CompositeResponse(
             {
                 "compositeResponse": [
-                    {"referenceId": "NewAccount", "httpStatusCode": 201, "body": {"id": "001xx000003DGbQ", "success": True}},
-                    {"referenceId": "GetAccount", "httpStatusCode": 200, "body": {"Id": "001xx000003DGbQ", "Name": "Test"}},
+                    {
+                        "referenceId": "NewAccount",
+                        "httpStatusCode": 201,
+                        "body": {"id": "001xx000003DGbQ", "success": True},
+                    },
+                    {
+                        "referenceId": "GetAccount",
+                        "httpStatusCode": 200,
+                        "body": {"Id": "001xx000003DGbQ", "Name": "Test"},
+                    },
                 ]
             }
         )
@@ -210,9 +222,7 @@ class TestCompositeRequest:
     def test_execute_all_or_none_failure(self, mock_client):
         """Test allOrNone=True raises on failure."""
         mock_client.http.return_value = {
-            "compositeResponse": [
-                {"referenceId": "NewAccount", "httpStatusCode": 400, "body": [{"message": "Error"}]}
-            ]
+            "compositeResponse": [{"referenceId": "NewAccount", "httpStatusCode": 400, "body": [{"message": "Error"}]}]
         }
 
         composite = CompositeRequest(mock_client, all_or_none=True)
@@ -249,4 +259,3 @@ class TestValidateCompositeResponse:
         )
 
         assert not validate_composite_response(response, raise_on_error=False)
-

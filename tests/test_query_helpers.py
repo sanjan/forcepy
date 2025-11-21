@@ -10,19 +10,19 @@ class TestCompileWhereClause:
 
     def test_simple_equality(self):
         """Test simple equality condition."""
-        clause = compile_where_clause(Status='New')
+        clause = compile_where_clause(Status="New")
         assert clause == "Status='New'"
 
     def test_multiple_equality(self):
         """Test multiple equality conditions."""
-        clause = compile_where_clause(Status='New', Priority='High')
+        clause = compile_where_clause(Status="New", Priority="High")
         assert "Status='New'" in clause
         assert "Priority='High'" in clause
         assert " AND " in clause
 
     def test_in_operator(self):
         """Test IN operator."""
-        clause = compile_where_clause(Status__in=['New', 'In Progress'])
+        clause = compile_where_clause(Status__in=["New", "In Progress"])
         # Order may vary, so check both possibilities
         assert "Status IN" in clause
         assert "'New'" in clause
@@ -50,22 +50,22 @@ class TestCompileWhereClause:
 
     def test_ne_operator(self):
         """Test not equal operator."""
-        clause = compile_where_clause(Status__ne='Closed')
+        clause = compile_where_clause(Status__ne="Closed")
         assert "Status!='Closed'" in clause
 
     def test_contains_operator(self):
         """Test LIKE contains operator."""
-        clause = compile_where_clause(Name__contains='test')
+        clause = compile_where_clause(Name__contains="test")
         assert "Name LIKE '%test%'" in clause
 
     def test_startswith_operator(self):
         """Test LIKE startswith operator."""
-        clause = compile_where_clause(Name__startswith='A')
+        clause = compile_where_clause(Name__startswith="A")
         assert "Name LIKE 'A%'" in clause
 
     def test_endswith_operator(self):
         """Test LIKE endswith operator."""
-        clause = compile_where_clause(Name__endswith='Inc')
+        clause = compile_where_clause(Name__endswith="Inc")
         assert "Name LIKE '%Inc'" in clause
 
     def test_boolean_value(self):
@@ -106,10 +106,7 @@ class TestCompileWhereClause:
     def test_complex_query(self):
         """Test complex query with multiple operators."""
         clause = compile_where_clause(
-            Status='New',
-            Priority__in=['High', 'Critical'],
-            Amount__gte=1000,
-            Name__startswith='A'
+            Status="New", Priority__in=["High", "Critical"], Amount__gte=1000, Name__startswith="A"
         )
         assert "Status='New'" in clause
         # Check IN clause components (order may vary)
@@ -149,4 +146,3 @@ class TestPrettyprintSoql:
         query = "SELECT Id FROM Account"
         formatted = prettyprint_soql(query)
         assert isinstance(formatted, str)
-

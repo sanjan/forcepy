@@ -89,9 +89,7 @@ class TestFormatChatterPost:
 
     def test_multiple_mentions(self):
         """Test multiple mentions."""
-        segments = format_chatter_post(
-            "@[005xx0000012345] and @[005xx0000054321]", break_on_newline=False
-        )
+        segments = format_chatter_post("@[005xx0000012345] and @[005xx0000054321]", break_on_newline=False)
         assert segments[0] == {"type": "Mention", "id": "005xx0000012345"}
         assert segments[1] == {"type": "Text", "text": " and "}
         assert segments[2] == {"type": "Mention", "id": "005xx0000054321"}
@@ -105,9 +103,7 @@ class TestFormatChatterPost:
 
     def test_hyperlink(self):
         """Test hyperlink formatting."""
-        segments = format_chatter_post(
-            '<a href="https://example.com">Link</a>', break_on_newline=False
-        )
+        segments = format_chatter_post('<a href="https://example.com">Link</a>', break_on_newline=False)
         assert len(segments) == 3
         assert segments[0]["type"] == "MarkupBegin"
         assert segments[0]["markupType"] == "Hyperlink"
@@ -299,4 +295,3 @@ class TestChatterClass:
         call_args = mock_client.http.call_args
         # Should be capped at 100
         assert call_args[1]["params"]["pageSize"] == 100
-
