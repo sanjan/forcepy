@@ -72,9 +72,6 @@ dmypy.json
 # pyenv
 .python-version
 
-# UV
-uv.lock
-
 # OS
 .DS_Store
 Thumbs.db
