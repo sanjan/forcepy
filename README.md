@@ -1,27 +1,45 @@
-# forcepy 👋
+<div align="center">
+  <img src="docs/images/force_py_header.png" alt="forcepy" width="600"/>
+</div>
 
-**A faster way to work with Salesforce data.**
+<h1 align="center">forcepy ⚡</h1>
 
-Forcepy transforms the way you interact with Salesforce APIs - turning complex operations into simple, Pythonic code. Build integrations, automate workflows, or migrate data with minimal effort and maximum power.
+<p align="center">
+  <strong>A faster way to work with Salesforce data.</strong>
+</p>
 
-[![PyPI version](https://img.shields.io/pypi/v/forcepy.svg)](https://pypi.org/project/forcepy/)
-[![Python versions](https://img.shields.io/pypi/pyversions/forcepy.svg)](https://pypi.org/project/forcepy/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-349%20passing-brightgreen.svg)](https://github.com/sanjan/forcepy)
-[![Code coverage](https://img.shields.io/badge/coverage-78%25-brightgreen.svg)](https://github.com/sanjan/forcepy)
+<p align="center">
+  <a href="https://pypi.org/project/forcepy/"><img src="https://img.shields.io/pypi/v/forcepy.svg" alt="PyPI version"/></a>
+  <a href="https://pypi.org/project/forcepy/"><img src="https://img.shields.io/pypi/pyversions/forcepy.svg" alt="Python versions"/></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"/></a>
+  <a href="https://github.com/sanjan/forcepy"><img src="https://img.shields.io/badge/tests-349%20passing-brightgreen.svg" alt="Tests"/></a>
+  <a href="https://github.com/sanjan/forcepy"><img src="https://img.shields.io/badge/coverage-78%25-brightgreen.svg" alt="Code coverage"/></a>
+</p>
 
-## What is forcepy?
+<p align="center">
+  Forcepy transforms the way you interact with Salesforce APIs - turning complex operations into simple, Pythonic code. Build integrations, automate workflows, or migrate data with minimal effort and maximum power.
+</p>
 
-Forcepy is a modern Python client for Salesforce that makes working with the Salesforce API feel natural and intuitive. Whether you're querying data, updating records, or building complex integrations, forcepy handles the heavy lifting so you can focus on solving business problems.
+<p align="center">
+  <a href="#installation">Installation</a> •
+  <a href="#quickstart">Quickstart</a> •
+  <a href="#-core-features">Features</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#examples">Examples</a>
+</p>
 
-### Why choose forcepy?
+<hr/>
 
-- **🎯 Simple and Pythonic:** Write beautiful, easy-to-read code that feels native to Python
-- **⚡ Lightning fast:** Smart caching, connection pooling, and auto-retry logic built-in
-- **🔐 Multiple auth methods:** SOAP, OAuth2, and JWT Bearer Flow - all supported
-- **🚀 Advanced features:** Q objects, client-side filtering, composite API, bulk operations
-- **📊 Developer-friendly:** Full type hints, comprehensive docs, and helpful error messages
-- **🎓 Beginner-friendly:** Object discovery, ID lookup, and intuitive query building
+## ⚡ Core Features
+
+- Transform your Salesforce workflow with **ZERO BOILERPLATE** (almost)! 🚀
+- Build with **ANY** Salesforce use case (REST API, Bulk API 2.0, Composite API, Chatter, Metadata); or even **WITHOUT** complexity (just import and go). You name it! 🔥
+- **🎯 Simple and Pythonic** - Write beautiful, easy-to-read code that feels native to Python
+- **⚡ Lightning fast** - Smart caching, connection pooling, and auto-retry logic built-in
+- **🔐 Multiple auth methods** - SOAP, OAuth2, and JWT Bearer Flow all supported
+- **🚀 Advanced query building** - Q objects, client-side filtering, and SOQL helpers
+- **📦 Bulk operations** - Handle millions of records with Bulk API 2.0
+- **📊 Developer-friendly** - Full type hints, comprehensive docs, and 349 passing tests
 
 ## Installation
 
