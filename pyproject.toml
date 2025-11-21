@@ -1,6 +1,6 @@
 [project]
 name = "forcepy"
-version = "0.1.1"
+version = "0.1.2"
 description = "A faster way to work with Salesforce - Modern Python client with advanced features"
 readme = "README.md"
 authors = [

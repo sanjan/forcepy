@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.2] - 2024-11-22
+
+### Added
+- Beautiful header image to README
+- Modern, centered layout inspired by Agent Lightning
+- Improved navigation with quick links
+
+### Fixed
+- Image now uses absolute GitHub URL for PyPI compatibility
+
 ## [0.1.1] - 2024-11-21
 
 ### Fixed

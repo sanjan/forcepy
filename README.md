@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/images/force_py_header.png" alt="forcepy" width="600"/>
+  <img src="https://raw.githubusercontent.com/sanjan/forcepy/main/docs/images/force_py_header.png" alt="forcepy" width="600"/>
 </div>
 
 <h1 align="center">forcepy ⚡</h1>
