@@ -7,6 +7,7 @@ Forcepy transforms the way you interact with Salesforce APIs - turning complex o
 [![PyPI version](https://img.shields.io/pypi/v/forcepy.svg)](https://pypi.org/project/forcepy/)
 [![Python versions](https://img.shields.io/pypi/pyversions/forcepy.svg)](https://pypi.org/project/forcepy/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-349%20passing-brightgreen.svg)](https://github.com/sanjan/forcepy)
 [![Code coverage](https://img.shields.io/badge/coverage-78%25-brightgreen.svg)](https://github.com/sanjan/forcepy)
 
 ## What is forcepy?
