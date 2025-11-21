@@ -123,7 +123,8 @@ class TestSecurityToken:
         mock_login.return_value = ("mock_session", "https://na1.salesforce.com")
 
         # This should trigger auto-login
-        sf = Salesforce(username="user@example.com", password="mypassword", security_token="AUTO_TOKEN")
+        sf = Salesforce(username="user@example.com", password="mypassword", security_token="AUTO_TOKEN")  # noqa: F841
+        assert sf is not None  # Verify object was created
 
         # Verify soap_login was called with password+token
         mock_login.assert_called_once()

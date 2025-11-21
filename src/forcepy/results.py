@@ -1,7 +1,9 @@
 """Result containers for forcepy with filtering, grouping, and ordering capabilities."""
 
 import collections
+import csv
 import datetime
+import io
 import re
 from collections.abc import Iterator
 from typing import Any, Callable, Optional, Union
@@ -455,9 +457,6 @@ class ResultSet(collections.UserList):
             >>> # Or write to file
             >>> accounts.records.to_csv('accounts.csv')
         """
-        import csv
-        import io
-
         if not self:
             return "" if filepath is None else None
 
@@ -505,9 +504,6 @@ class ResultSet(collections.UserList):
             >>> csv_data = "Id,Name\\n001xxx,Acme Corp"
             >>> accounts = ResultSet.from_csv(io.StringIO(csv_data))
         """
-        import csv
-        import io
-
         if isinstance(filepath_or_data, str):
             if "\n" in filepath_or_data or "," in filepath_or_data:
                 # It's CSV data, not a filepath

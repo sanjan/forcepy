@@ -79,7 +79,11 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
-ignore = ["E501"]
+ignore = [
+    "E501",    # Line too long (handled by formatter)
+    "N802",    # Function name should be lowercase (SOQL helpers: IN, DATE, BOOL are intentional)
+    "N818",    # Exception name should end with Error (BulkJobTimeout is intentional)
+]
 
 [tool.mypy]
 python_version = "3.9"
