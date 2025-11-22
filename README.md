@@ -145,12 +145,19 @@ from forcepy import Chatter
 
 chatter = Chatter(sf)
 
-# Post with mentions and formatting
-chatter.post("Hey @[005xx0000012345]! Check this out: <b>Q4 goals achieved!</b>")
+# Post with @mentions and $record links (entity tagging)
+chatter.post("Hey @[005xx0000012345]! Please review $[001xx0000012345]")
+
+# HTML formatting
+chatter.post("<b>Important:</b> <i>Q4 goals achieved!</i>")
 
 # Post to groups
 chatter.post_to_group("0F9xx000000abcd", "Team meeting at 2pm!")
 ```
+
+**Entity Tagging:**
+- `@[userId]` - Mention users (e.g., `@[005xx0000012345]`)
+- `$[recordId]` - Link to records (e.g., `$[001xx0000012345]`)
 
 #### 🎁 Developer Experience Features
 
