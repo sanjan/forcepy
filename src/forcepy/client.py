@@ -1171,7 +1171,12 @@ class Salesforce:
         return DynamicEndpoint(self, ["sobjects"])
 
     def __getattr__(self, name: str):
-        """Enable dynamic endpoint access from client root."""
+        """Enable dynamic endpoint access from client root.
+        
+        Automatically routes SObject names (capitalized or ending in __c) 
+        to /sobjects/ endpoint for user-friendly access like sf.Account
+        instead of sf.sobjects.Account.
+        """
         # Special handling for bulk property (lazy initialization)
         if name == "bulk":
             # Avoid infinite recursion by checking __dict__ directly
@@ -1180,6 +1185,14 @@ class Salesforce:
 
                 self._bulk_api = BulkAPI(self)
             return self._bulk_api
+        
+        # Auto-detect SObject names (like sfdcutils and simple-salesforce)
+        # - Starts with uppercase letter (e.g., Account, Case, Contact)
+        # - OR ends with __c (custom objects)
+        if name[0].isupper() or name.endswith('__c'):
+            return DynamicEndpoint(self, ["sobjects", name])
+        
+        # Other attributes go to root
         return DynamicEndpoint(self, [name])
 
     def __enter__(self) -> "Salesforce":

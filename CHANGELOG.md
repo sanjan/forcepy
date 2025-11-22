@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.4] - 2025-01-22
+
+### Added
+- User-friendly direct SObject access: `sf.Account` now works (like sfdcutils/simple-salesforce)
+- Auto-detection of SObject names (capitalized or ending in `__c`)
+- Both `sf.Account` and `sf.sobjects.Account` patterns now supported
+
+### Changed
+- Improved developer experience - no need to type `.sobjects` every time!
+
 ## [0.1.3] - 2024-11-22
 
 ### Added

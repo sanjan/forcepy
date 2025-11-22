@@ -326,20 +326,23 @@ from forcepy import Salesforce
 
 sf = Salesforce(username='user@example.com', password='password')
 
-# Create
-result = sf.sobjects.Account.post(Name='Acme Corp', Industry='Technology')
+# Create (both styles work!)
+result = sf.Account.post(Name='Acme Corp', Industry='Technology')
+# or: sf.sobjects.Account.post(...)
 account_id = result['id']
 
 # Read
-account = sf.sobjects.Account[account_id].get()
+account = sf.Account[account_id].get()
 print(account['Name'])
 
 # Update
-sf.sobjects.Account[account_id].patch(Industry='Manufacturing')
+sf.Account[account_id].patch(Industry='Manufacturing')
 
 # Delete
-sf.sobjects.Account[account_id].delete()
+sf.Account[account_id].delete()
 ```
+
+> **💡 Tip:** Both `sf.Account` and `sf.sobjects.Account` work! Use whichever style you prefer.
 
 ### Advanced Query with Q Objects
 
