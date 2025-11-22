@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.3] - 2024-11-22
+
+### Added
+- Comprehensive migration guide from simple-salesforce (850+ lines)
+- Clarified entity tagging syntax in README (@[userId] and $[recordId])
+
+### Removed
+- Redundant PUBLISHING.md (automated publishing is preferred method)
+
+### Documentation
+- Enhanced Chatter section to clearly show both entity tagging syntaxes
+- Added migration guide to README documentation sections
+
 ## [0.1.2] - 2024-11-22
 
 ### Added
