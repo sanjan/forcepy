@@ -256,6 +256,7 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
 
 ## Documentation
 
+- 🔄 **[Migration from simple-salesforce](docs/MIGRATION_FROM_SIMPLE_SALESFORCE.md)** - Step-by-step migration guide
 - 📖 **[Token Caching Guide](docs/TOKEN_CACHING.md)** - Production caching strategies
 - 🔐 **[Authentication Guide](docs/AUTHENTICATION.md)** - All auth methods explained
 - 💬 **[Chatter Features](docs/CHATTER_FEATURES.md)** - Complete Chatter reference
@@ -264,6 +265,7 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
 ## Resources
 
 - **Documentation:**
+  - [Migration from simple-salesforce](docs/MIGRATION_FROM_SIMPLE_SALESFORCE.md) - Step-by-step guide
   - [Authentication Guide](docs/AUTHENTICATION.md) - All auth methods explained
   - [Token Caching Guide](docs/TOKEN_CACHING.md) - Production caching strategies
   - [Chatter Features](docs/CHATTER_FEATURES.md) - Complete Chatter reference
