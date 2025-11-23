@@ -59,9 +59,9 @@ class DynamicEndpoint:
 
     def filter(self, fields=None, **kwargs) -> Any:
         """Server-side filtering - builds and executes SOQL query.
-        
+
         Automatically generates SOQL query from field lookups and returns all matching records.
-        
+
         Supports operators:
         - field=value: exact match
         - field__gt/gte/lt/lte=value: comparisons
@@ -70,14 +70,14 @@ class DynamicEndpoint:
         - field__contains=value: LIKE '%value%'
         - field__startswith=value: LIKE 'value%'
         - field__endswith=value: LIKE '%value'
-        
+
         Args:
             fields: List of fields to retrieve, or comma-separated string. Defaults to common fields.
             **kwargs: Field lookups (e.g., Industry='Technology', Status='Open')
-            
+
         Returns:
             ResultSet of matching records
-            
+
         Example:
             >>> # Filter accounts by industry (returns Id, Name by default)
             >>> accounts = sf.Account.filter(Industry='Technology')
@@ -94,49 +94,50 @@ class DynamicEndpoint:
         """
         if not self.path or len(self.path) < 2:
             raise ValueError("Cannot use filter() on non-sobject endpoints")
-        
+
         sobject = self.path[-1]  # Last path element is the sobject name
-        
+
         # Determine fields to select
         if fields is None:
             # Default to common fields
-            if sobject in ('Account', 'Contact', 'Lead'):
-                field_list = 'Id, Name'
-            elif sobject == 'Case':
-                field_list = 'Id, CaseNumber, Subject, Status'
-            elif sobject == 'Opportunity':
-                field_list = 'Id, Name, StageName, Amount'
+            if sobject in ("Account", "Contact", "Lead"):
+                field_list = "Id, Name"
+            elif sobject == "Case":
+                field_list = "Id, CaseNumber, Subject, Status"
+            elif sobject == "Opportunity":
+                field_list = "Id, Name, StageName, Amount"
             else:
                 # For unknown objects, just get Id and Name (if it exists)
-                field_list = 'Id, Name'
+                field_list = "Id, Name"
         elif isinstance(fields, list):
-            field_list = ', '.join(fields)
+            field_list = ", ".join(fields)
         else:
             field_list = fields
-        
+
         # Build WHERE clause from kwargs
         from .query import compile_where_clause
+
         where_clause = compile_where_clause(**kwargs)
-        
+
         # Query for all matching records
         query = f"SELECT {field_list} FROM {sobject} WHERE {where_clause}"
         return self.client.query(query)
 
     def get(self, id_or_kwargs=None, **kwargs) -> Any:
         """GET request or smart query lookup.
-        
+
         Can be used in three ways:
         1. Get by ID: sf.Account['001xx...'].get()
         2. Get by ID: sf.Account.get('001xx...')
         3. Get by field: sf.Account.get(Name='Acme Corp')
-        
+
         Args:
             id_or_kwargs: Record ID string, or first keyword argument name
             **kwargs: Field name/value pairs for query lookup
-            
+
         Returns:
             Record dict if found, raises error if not found or multiple found
-            
+
         Example:
             >>> # By ID
             >>> sf.Account.get('001xx000003DGb2AAG')
@@ -151,47 +152,48 @@ class DynamicEndpoint:
             ref_id = f"request_{len(self.client._batch_requests)}"
             self.client._batch_requests.append({"method": "GET", "url": self._build_url(), "referenceId": ref_id})
             return {"referenceId": ref_id}
-        
+
         # Case 1: Direct ID in path (e.g., sf.Account['001...'].get())
         if id_or_kwargs is None and not kwargs:
             return self.client.http("GET", self._build_url())
-        
+
         # Case 2: ID as first argument (e.g., sf.Account.get('001...'))
         if id_or_kwargs is not None and not kwargs and isinstance(id_or_kwargs, str):
             # Check if it looks like an ID (15 or 18 chars, alphanumeric)
             if len(id_or_kwargs) in (15, 18) and id_or_kwargs.isalnum():
                 url = self._build_url() + f"/{id_or_kwargs}"
                 return self.client.http("GET", url)
-        
+
         # Case 3: Query by field (e.g., sf.Account.get(Name='Acme'))
         # Build kwargs from positional if provided as dict
         if id_or_kwargs is not None and isinstance(id_or_kwargs, dict):
             kwargs.update(id_or_kwargs)
         elif id_or_kwargs is not None:
             raise ValueError(f"Invalid argument: {id_or_kwargs}. Use get('id') or get(Field='value')")
-        
+
         # Need to extract sobject name from path
         if not self.path or len(self.path) < 2:
             raise ValueError("Cannot use field query on non-sobject endpoints")
-        
+
         sobject = self.path[-1]  # Last path element is the sobject name
-        
+
         # Build WHERE clause from kwargs
         from .query import compile_where_clause
+
         where_clause = compile_where_clause(**kwargs)
-        
+
         # Query for the record
         query = f"SELECT Id FROM {sobject} WHERE {where_clause}"
         result = self.client.query(query)
-        
+
         # Handle empty results
         if not result or len(result) == 0:
             raise ValueError(f"No {sobject} found matching {kwargs}")
         if len(result) > 1:
             raise ValueError(f"Multiple {sobject} records found matching {kwargs}. Got {len(result)} results.")
-        
+
         # Get the full record by ID
-        record_id = result[0].Id if hasattr(result[0], 'Id') else result[0]['Id']
+        record_id = result[0].Id if hasattr(result[0], "Id") else result[0]["Id"]
         url = self._build_url() + f"/{record_id}"
         return self.client.http("GET", url)
 
@@ -628,12 +630,13 @@ class Salesforce:
         # Should not reach here, but just in case
         raise APIError(f"Request failed after {self.max_retries} retries")
 
-    def query(self, soql: str, expand_select_star: bool = False, **kwargs) -> SobjectSet:
+    def query(self, soql: str, expand_select_star: bool = False, timeout: Optional[int] = None, **kwargs) -> SobjectSet:
         """Execute SOQL query.
 
         Args:
             soql: SOQL query string
             expand_select_star: Auto-expand SELECT * to all fields (default: False)
+            timeout: Query timeout in seconds (optional, overrides default)
             **kwargs: Additional query parameters
 
         Returns:
@@ -645,6 +648,9 @@ class Salesforce:
 
             >>> # With SELECT * expansion
             >>> results = sf.query("SELECT * FROM Account LIMIT 5", expand_select_star=True)
+
+            >>> # With custom timeout for long-running queries
+            >>> results = sf.query("SELECT Id, Name FROM Account", timeout=120)
 
             >>> # Access pagination info
             >>> if not results.done:
@@ -660,8 +666,13 @@ class Salesforce:
         params = {"q": soql}
         params.update(kwargs)
 
+        # Prepare http kwargs
+        http_kwargs = {"params": params}
+        if timeout is not None:
+            http_kwargs["timeout"] = timeout
+
         try:
-            response = self.http("GET", url, params=params)
+            response = self.http("GET", url, **http_kwargs)
 
             # Convert to Sobject instances
             records = SobjectSet()
@@ -1301,8 +1312,8 @@ class Salesforce:
 
     def __getattr__(self, name: str):
         """Enable dynamic endpoint access from client root.
-        
-        Automatically routes SObject names (capitalized or ending in __c) 
+
+        Automatically routes SObject names (capitalized or ending in __c)
         to /sobjects/ endpoint for user-friendly access like sf.Account
         instead of sf.sobjects.Account.
         """
@@ -1314,13 +1325,13 @@ class Salesforce:
 
                 self._bulk_api = BulkAPI(self)
             return self._bulk_api
-        
-        # Auto-detect SObject names (like sfdcutils and simple-salesforce)
+
+        # Auto-detect SObject names for intuitive access
         # - Starts with uppercase letter (e.g., Account, Case, Contact)
         # - OR ends with __c (custom objects)
-        if name[0].isupper() or name.endswith('__c'):
+        if name[0].isupper() or name.endswith("__c"):
             return DynamicEndpoint(self, ["sobjects", name])
-        
+
         # Other attributes go to root
         return DynamicEndpoint(self, [name])
 

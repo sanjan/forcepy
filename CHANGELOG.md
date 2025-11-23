@@ -12,6 +12,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.7] - 2025-01-23
+
+### Added
+- **Query timeout parameter** - Control query execution time
+  - `sf.query(soql, timeout=120)` - Set custom timeout per query
+  - Useful for long-running reports or health checks
+  - Overrides default timeout on a per-query basis
+- **Production Patterns Guide** - Comprehensive documentation for enterprise use
+  - Child relationship queries (subqueries) with safe access patterns
+  - Parent relationship traversal (multi-level)
+  - Record updates with `.patch()` method
+  - SOQL helper functions (`DATE`, `IN`, `BOOL`) with examples
+  - Multi-instance management (prod, sandbox, multiple orgs)
+  - Error handling and retry strategies
+  - Pagination patterns for large datasets
+  - Performance optimization techniques
+
+### Changed
+- Enhanced README with production-ready patterns section
+  - Child relationship query examples
+  - `.patch()` update patterns prominently featured
+  - SOQL helper function examples (DATE, IN, BOOL)
+  - Query timeout examples
+  - Convenience methods (`.earliest()`, `.latest()`)
+- Improved documentation structure
+  - Added Production Patterns guide to main navigation
+  - Better visibility of existing features
+  - All examples use standard Salesforce objects
+
+### Documentation
+- New `docs/PRODUCTION_PATTERNS.md` - Battle-tested patterns from real-world usage
+- Updated README with comprehensive production examples
+- Better feature discoverability
+
 ## [0.1.6] - 2025-01-22
 
 ### Added
@@ -33,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `sf.Account.get('001xx...')` - Get by ID
   - `sf.Case.get(CaseNumber='00001234')` - Get by field name
   - `sf.Account.get(Name='Acme Corp')` - Query by any field
-  - Auto-queries and returns full record (just like sfdcutils!)
+  - Auto-queries and returns full record
 
 ### Changed
 - Enhanced developer experience - no more manual queries for single-record lookups
@@ -41,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.4] - 2025-01-22
 
 ### Added
-- User-friendly direct SObject access: `sf.Account` now works (like sfdcutils/simple-salesforce)
+- User-friendly direct SObject access: `sf.Account` now works alongside `sf.sobjects.Account`
 - Auto-detection of SObject names (capitalized or ending in `__c`)
 - Both `sf.Account` and `sf.sobjects.Account` patterns now supported
 
@@ -165,8 +199,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `redis>=4.0.0` - Redis cache backend (install with `pip install forcepy[redis]`)
 
 #### Python Support
-- Python 3.9+
-- Tested on Python 3.9, 3.10, 3.11, 3.12
+- Python 3.11+
+- Tested on Python 3.11, 3.12, 3.13
 
 #### Code Quality
 - **Linting**: ruff with strict rules

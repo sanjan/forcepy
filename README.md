@@ -101,6 +101,114 @@ That's it! You're already querying Salesforce data. 🎉
 
 Forcepy comes packed with advanced features:
 
+#### 🏭 Production-Ready Patterns
+
+##### Update Records with .patch()
+
+```python
+# Update via direct endpoint
+sf.Account[account_id].patch(
+    Phone='555-1234',
+    Industry='Technology',
+    Website='https://acme.com',
+    timeout=60  # Custom timeout
+)
+
+# Update via object instance
+account = sf.Account.get(Name='Acme Corp')
+account.patch(sf, Phone='555-5678')
+
+# Bulk updates from query results
+cases = sf.query("SELECT Id FROM Case WHERE Status = 'New' AND Priority = 'High'")
+for case in cases:
+    sf.Case[case.Id].patch(Status='In Progress', OwnerId=user_id)
+```
+
+##### SOQL Helper Functions
+
+```python
+from forcepy import DATE, IN, BOOL
+from datetime import datetime, timedelta
+
+# Date formatting for queries
+last_week = DATE(datetime.now() - timedelta(days=7))
+recent_cases = sf.query(f"SELECT Id FROM Case WHERE CreatedDate >= {last_week}")
+
+# IN clause for lists
+regions = ['US', 'EU', 'APAC']
+accounts = sf.query(f"SELECT Id, Name FROM Account WHERE Region__c IN {IN(regions)}")
+
+# Boolean formatting
+active = sf.query(f"SELECT Id FROM Account WHERE IsActive__c = {BOOL(True)}")
+```
+
+##### Child Relationship Queries (Subqueries)
+
+```python
+# Query parent with multiple child relationships
+accounts = sf.query("""
+    SELECT Id, Name, Industry,
+           (SELECT Id, FirstName, LastName, Email FROM Contacts),
+           (SELECT Id, Name, StageName, Amount FROM Opportunities WHERE StageName = 'Closed Won')
+    FROM Account
+    WHERE Industry = 'Technology'
+""")
+
+# Access child records safely
+for account in accounts:
+    print(f"Account: {account.Name}")
+    
+    # Pattern 1: Safe check before iteration
+    if account.Contacts:
+        for contact in account.Contacts.records:
+            print(f"  Contact: {contact.FirstName} {contact.LastName}")
+    
+    # Pattern 2: Default to empty list
+    for opp in account.Opportunities and account.Opportunities.records or []:
+        print(f"  Opportunity: {opp.Name} - ${opp.Amount}")
+```
+
+##### Parent Relationship Traversal
+
+```python
+# Traverse up parent relationships
+contacts = sf.query("""
+    SELECT Id, FirstName, LastName,
+           Account.Name,
+           Account.Owner.Name,
+           Account.Owner.Email
+    FROM Contact
+    WHERE Account.Industry = 'Technology'
+""")
+
+for contact in contacts:
+    print(f"{contact.FirstName} works at {contact.Account.Name}")
+    print(f"  Account owner: {contact.Account.Owner.Name}")
+```
+
+##### Query Timeouts
+
+```python
+# Set custom timeout for long-running queries
+large_dataset = sf.query(
+    "SELECT Id, Name, (SELECT Id FROM Contacts) FROM Account",
+    timeout=120  # 120 seconds
+)
+```
+
+##### Convenience Methods
+
+```python
+# Get earliest/latest records
+cases = sf.query("SELECT Id, CaseNumber, CreatedDate FROM Case WHERE Status = 'Open'")
+
+oldest_case = cases.earliest('CreatedDate')  # Or just .earliest()
+newest_case = cases.latest('CreatedDate')
+
+# Group and count
+by_status = cases.group_by('Status').count()
+```
+
 #### 🔍 Advanced Query Building
 
 ```python
@@ -263,6 +371,7 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
 
 ## Documentation
 
+- 🏭 **[Production Patterns](docs/PRODUCTION_PATTERNS.md)** - Battle-tested patterns for enterprise use
 - 🔄 **[Migration from simple-salesforce](docs/MIGRATION_FROM_SIMPLE_SALESFORCE.md)** - Step-by-step migration guide
 - 📖 **[Token Caching Guide](docs/TOKEN_CACHING.md)** - Production caching strategies
 - 🔐 **[Authentication Guide](docs/AUTHENTICATION.md)** - All auth methods explained
@@ -272,6 +381,7 @@ Build custom apps that extend Salesforce capabilities beyond the platform.
 ## Resources
 
 - **Documentation:**
+  - [Production Patterns](docs/PRODUCTION_PATTERNS.md) - Child queries, updates, helpers, multi-org
   - [Migration from simple-salesforce](docs/MIGRATION_FROM_SIMPLE_SALESFORCE.md) - Step-by-step guide
   - [Authentication Guide](docs/AUTHENTICATION.md) - All auth methods explained
   - [Token Caching Guide](docs/TOKEN_CACHING.md) - Production caching strategies

@@ -1,12 +1,12 @@
 [project]
 name = "forcepy"
-version = "0.1.6"
+version = "0.1.7"
 description = "A faster way to work with Salesforce - Modern Python client with advanced features"
 readme = "README.md"
 authors = [
     { name = "Sanjan Grero", email = "sgrero@salesforce.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "requests>=2.25.0",
     "python-dateutil>=2.8.0",
@@ -36,10 +36,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -86,7 +85,7 @@ ignore = [
 ]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 strict = true
 warn_return_any = true
 disallow_untyped_defs = true

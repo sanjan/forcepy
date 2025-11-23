@@ -76,7 +76,7 @@ XML-based SOAP API client. Older library using Salesforce's SOAP/XML interface.
 | Convenience Methods (.first(), .last()) | ✅ | ❌ | ❌ |
 | Case-Insensitive Filters | ✅ | ❌ | ❌ |
 | CSV Export/Import | ✅ | ❌ | ❌ |
-| Modern Python (3.9+) | ✅ | ✅ | ❌ |
+| Modern Python (3.11+) | ✅ | ✅ | ❌ |
 | API Style | REST | REST | SOAP/XML |
 
 **Legend:**
@@ -558,7 +558,7 @@ records = results['records']
 ✅ **Production reliability** with auto-retry and session tracking  
 ✅ **JWT authentication** for serverless/CI environments  
 ✅ **Token caching** for performance (Redis support)  
-✅ **Type hints** and modern Python (3.9+)  
+✅ **Type hints** and modern Python (3.11+)  
 ✅ **Composite API** for batch operations  
 
 **Best for:** New projects, complex queries, production deployments, beginners
@@ -645,7 +645,7 @@ by_state = results.group_by('BillingState').count()
 | **Last Update** | Active | Active | Less active |
 | **Documentation** | Comprehensive | Good | Basic |
 | **Issues Response** | Active | Active | Slow |
-| **Python Version** | 3.9+ | 3.7+ | 2.7/3.x |
+| **Python Version** | 3.11+ | 3.7+ | 2.7/3.x |
 
 ---
 
