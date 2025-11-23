@@ -57,14 +57,78 @@ class DynamicEndpoint:
         """
         return self._build_url()
 
-    def get(self, **params) -> Any:
-        """GET request."""
+    def get(self, id_or_kwargs=None, **kwargs) -> Any:
+        """GET request or smart query lookup.
+        
+        Can be used in three ways:
+        1. Get by ID: sf.Account['001xx...'].get()
+        2. Get by ID: sf.Account.get('001xx...')
+        3. Get by field: sf.Account.get(Name='Acme Corp')
+        
+        Args:
+            id_or_kwargs: Record ID string, or first keyword argument name
+            **kwargs: Field name/value pairs for query lookup
+            
+        Returns:
+            Record dict if found, raises error if not found or multiple found
+            
+        Example:
+            >>> # By ID
+            >>> sf.Account.get('001xx000003DGb2AAG')
+            >>> sf.Account['001xx000003DGb2AAG'].get()
+            >>>
+            >>> # By field name
+            >>> sf.Case.get(CaseNumber='00001234')
+            >>> sf.Account.get(Name='Acme Corp')
+        """
+        # If in batch mode, only support ID-based get
         if self.client._batch_mode:
-            # Add to batch queue
             ref_id = f"request_{len(self.client._batch_requests)}"
             self.client._batch_requests.append({"method": "GET", "url": self._build_url(), "referenceId": ref_id})
-            return {"referenceId": ref_id}  # Return placeholder
-        return self.client.http("GET", self._build_url(), params=params)
+            return {"referenceId": ref_id}
+        
+        # Case 1: Direct ID in path (e.g., sf.Account['001...'].get())
+        if id_or_kwargs is None and not kwargs:
+            return self.client.http("GET", self._build_url())
+        
+        # Case 2: ID as first argument (e.g., sf.Account.get('001...'))
+        if id_or_kwargs is not None and not kwargs and isinstance(id_or_kwargs, str):
+            # Check if it looks like an ID (15 or 18 chars, alphanumeric)
+            if len(id_or_kwargs) in (15, 18) and id_or_kwargs.isalnum():
+                url = self._build_url() + f"/{id_or_kwargs}"
+                return self.client.http("GET", url)
+        
+        # Case 3: Query by field (e.g., sf.Account.get(Name='Acme'))
+        # Build kwargs from positional if provided as dict
+        if id_or_kwargs is not None and isinstance(id_or_kwargs, dict):
+            kwargs.update(id_or_kwargs)
+        elif id_or_kwargs is not None:
+            raise ValueError(f"Invalid argument: {id_or_kwargs}. Use get('id') or get(Field='value')")
+        
+        # Need to extract sobject name from path
+        if not self.path or len(self.path) < 2:
+            raise ValueError("Cannot use field query on non-sobject endpoints")
+        
+        sobject = self.path[-1]  # Last path element is the sobject name
+        
+        # Build WHERE clause from kwargs
+        from .query import compile_where_clause
+        where_clause = compile_where_clause(**kwargs)
+        
+        # Query for the record
+        query = f"SELECT Id FROM {sobject} WHERE {where_clause}"
+        result = self.client.query(query)
+        
+        # Handle empty results
+        if not result or len(result) == 0:
+            raise ValueError(f"No {sobject} found matching {kwargs}")
+        if len(result) > 1:
+            raise ValueError(f"Multiple {sobject} records found matching {kwargs}. Got {len(result)} results.")
+        
+        # Get the full record by ID
+        record_id = result[0].Id if hasattr(result[0], 'Id') else result[0]['Id']
+        url = self._build_url() + f"/{record_id}"
+        return self.client.http("GET", url)
 
     def post(self, **data) -> Any:
         """POST request."""

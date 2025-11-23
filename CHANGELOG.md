@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.5] - 2025-01-22
+
+### Added
+- **Smart `.get()` method** - Now supports querying by any field!
+  - `sf.Account.get('001xx...')` - Get by ID
+  - `sf.Case.get(CaseNumber='00001234')` - Get by field name
+  - `sf.Account.get(Name='Acme Corp')` - Query by any field
+  - Auto-queries and returns full record (just like sfdcutils!)
+
+### Changed
+- Enhanced developer experience - no more manual queries for single-record lookups
+
 ## [0.1.4] - 2025-01-22
 
 ### Added

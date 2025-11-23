@@ -326,14 +326,19 @@ from forcepy import Salesforce
 
 sf = Salesforce(username='user@example.com', password='password')
 
-# Create (both styles work!)
-result = sf.Account.post(Name='Acme Corp', Industry='Technology')
-# or: sf.sobjects.Account.post(...)
-account_id = result['id']
+# Get by ID (three ways!)
+account = sf.Account.get('001xx0000012345')
+# or: sf.Account['001xx0000012345'].get()
+# or: sf.sobjects.Account['001xx0000012345'].get()
 
-# Read
-account = sf.Account[account_id].get()
-print(account['Name'])
+# Get by field name - NEW! 🎉
+case = sf.Case.get(CaseNumber='00001234')
+account = sf.Account.get(Name='Acme Corp')
+contact = sf.Contact.get(Email='john@example.com')
+
+# Create
+result = sf.Account.post(Name='Acme Corp', Industry='Technology')
+account_id = result['id']
 
 # Update
 sf.Account[account_id].patch(Industry='Manufacturing')
@@ -342,7 +347,7 @@ sf.Account[account_id].patch(Industry='Manufacturing')
 sf.Account[account_id].delete()
 ```
 
-> **💡 Tip:** Both `sf.Account` and `sf.sobjects.Account` work! Use whichever style you prefer.
+> **💡 Tip:** Both `sf.Account` and `sf.sobjects.Account` work! The `.get()` method is smart - pass an ID or query by any field.
 
 ### Advanced Query with Q Objects
 
