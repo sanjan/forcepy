@@ -57,6 +57,71 @@ class DynamicEndpoint:
         """
         return self._build_url()
 
+    def filter(self, fields=None, **kwargs) -> Any:
+        """Server-side filtering - builds and executes SOQL query.
+        
+        Automatically generates SOQL query from field lookups and returns all matching records.
+        
+        Supports operators:
+        - field=value: exact match
+        - field__gt/gte/lt/lte=value: comparisons
+        - field__ne=value: not equal
+        - field__in=[...]: IN clause
+        - field__contains=value: LIKE '%value%'
+        - field__startswith=value: LIKE 'value%'
+        - field__endswith=value: LIKE '%value'
+        
+        Args:
+            fields: List of fields to retrieve, or comma-separated string. Defaults to common fields.
+            **kwargs: Field lookups (e.g., Industry='Technology', Status='Open')
+            
+        Returns:
+            ResultSet of matching records
+            
+        Example:
+            >>> # Filter accounts by industry (returns Id, Name by default)
+            >>> accounts = sf.Account.filter(Industry='Technology')
+            >>>
+            >>> # Specify fields to retrieve
+            >>> accounts = sf.Account.filter(fields=['Id', 'Name', 'Industry'], Industry='Technology')
+            >>> accounts = sf.Account.filter(fields='Id, Name, Industry', Industry='Technology')
+            >>>
+            >>> # Multiple conditions (AND logic)
+            >>> high_value = sf.Account.filter(Industry='Technology', AnnualRevenue__gte=1000000)
+            >>>
+            >>> # Open high-priority cases
+            >>> cases = sf.Case.filter(Status='Open', Priority='High')
+        """
+        if not self.path or len(self.path) < 2:
+            raise ValueError("Cannot use filter() on non-sobject endpoints")
+        
+        sobject = self.path[-1]  # Last path element is the sobject name
+        
+        # Determine fields to select
+        if fields is None:
+            # Default to common fields
+            if sobject in ('Account', 'Contact', 'Lead'):
+                field_list = 'Id, Name'
+            elif sobject == 'Case':
+                field_list = 'Id, CaseNumber, Subject, Status'
+            elif sobject == 'Opportunity':
+                field_list = 'Id, Name, StageName, Amount'
+            else:
+                # For unknown objects, just get Id and Name (if it exists)
+                field_list = 'Id, Name'
+        elif isinstance(fields, list):
+            field_list = ', '.join(fields)
+        else:
+            field_list = fields
+        
+        # Build WHERE clause from kwargs
+        from .query import compile_where_clause
+        where_clause = compile_where_clause(**kwargs)
+        
+        # Query for all matching records
+        query = f"SELECT {field_list} FROM {sobject} WHERE {where_clause}"
+        return self.client.query(query)
+
     def get(self, id_or_kwargs=None, **kwargs) -> Any:
         """GET request or smart query lookup.
         

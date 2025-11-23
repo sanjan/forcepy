@@ -331,10 +331,21 @@ account = sf.Account.get('001xx0000012345')
 # or: sf.Account['001xx0000012345'].get()
 # or: sf.sobjects.Account['001xx0000012345'].get()
 
-# Get by field name - NEW! 🎉
+# Get by field name 🎉
 case = sf.Case.get(CaseNumber='00001234')
 account = sf.Account.get(Name='Acme Corp')
-contact = sf.Contact.get(Email='john@example.com')
+
+# Filter - NEW! 🔥 (simple-salesforce doesn't have this!)
+tech_accounts = sf.Account.filter(Industry='Technology')
+open_cases = sf.Case.filter(Status='Open', Priority='High')
+contacts = sf.Contact.filter(Email__contains='@acme.com')
+
+# Filter with custom fields
+accounts = sf.Account.filter(
+    fields=['Id', 'Name', 'Industry', 'AnnualRevenue'],
+    Industry='Technology',
+    AnnualRevenue__gte=1000000
+)
 
 # Create
 result = sf.Account.post(Name='Acme Corp', Industry='Technology')
@@ -347,7 +358,7 @@ sf.Account[account_id].patch(Industry='Manufacturing')
 sf.Account[account_id].delete()
 ```
 
-> **💡 Tip:** Both `sf.Account` and `sf.sobjects.Account` work! The `.get()` method is smart - pass an ID or query by any field.
+> **💡 Tip:** `.get()` returns one record (or errors). `.filter()` returns multiple records. Both support field queries!
 
 ### Advanced Query with Q Objects
 

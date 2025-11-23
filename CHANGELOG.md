@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Platform Events support
 - Enhanced async/await patterns
 
+## [0.1.6] - 2025-01-22
+
+### Added
+- **Server-side `.filter()` method** - Query objects directly from endpoints! 🎯
+  - `sf.Account.filter(Industry='Technology')` - Auto-generates SOQL
+  - `sf.Case.filter(Status='Open', Priority='High')` - Multiple conditions (AND logic)
+  - `sf.Contact.filter(Email__contains='@acme.com')` - All operators supported
+  - `sf.Account.filter(fields=['Id', 'Name', 'Industry'], ...)` - Custom field selection
+  - Returns ResultSet (not just IDs!) - ready to use immediately
+  - **Unique to forcepy** - simple-salesforce doesn't have this!
+
+### Changed
+- Enhanced developer experience - no more manual SOQL for simple filters
+
 ## [0.1.5] - 2025-01-22
 
 ### Added
